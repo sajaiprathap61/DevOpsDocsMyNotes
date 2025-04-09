@@ -1,0 +1,122 @@
+PROMETHEUS
+
+**Initially read the steps carefully and understand the flow and then look into the commands**
+
+PROMETHEUS INSTALLATION STEPS:
+------------------------------
+
+***Create a Prometheus server in EC2, Login using ssh and then follow the setups to install and start the Prometheus***
+*** Edit the inbound traffic rules to allow the inbound traffic to 9090 which is the default port for Prometheus***
+
+1. Go to link and download the latest tar file.
+2. Prometheus need USER and GROUP to run their services. Which is the best practice to follow. So create a Prometheus user and group.
+3. Create a prometheus directory. "/var/lib/prometheus"
+4. There are concepts called rules for which we create 3 directories. "rules", "rules.s" and "files_sd" in "/etc/prometheus/".
+5. Unzip the tar file.
+6. Move the unzipped tar file to "/usr/local/bin/" to make sure every user can access the Prometheus. (Prometheus Global Access).
+7. Move 3 files "prometheus.yml", "consoles", console_libraries" to "/etc/prometheus".
+8. Create a service file to run the Prometheus as service. Create a "prometheus.service" file in "/etc/systemd/system/prometheus.servuce".
+9. Paste the required code to the "prometheus.service" file.
+10. Give all the required access to the "/etc/prometheus" and "/var/lib/prometheus/" for the prometheus user and group.
+11. Start the Prometheus Daemon
+12. Start the Prometheus
+13. Enable the Prometheus.
+14. See the status of the Prometheus.
+
+---------------------------------------------------------------
+
+COMMANDS:
+--------
+
+Go to link https://prometheus.io/download/
+Choose the version : wget https://github.com/prometheus/prometheus/releases/download/v2.44.0/prometheus-2.44.0.linux-amd64.tar.gz
+
+Prometheus need user and group to run their services.
+
+sudo groupadd --system prometheus
+sudo useradd -s /sbin/nologin --system -g prometheus prometheus
+
+
+now we will create one directory for prometheus
+
+sudo mkdir /var/lib/prometheus
+
+there is concept call rules we will learn later but for them we need to create 3 directory
+
+sudo mkdir -p /etc/prometheus/rules
+sudo mkdir -p /etc/prometheus/rules.s
+sudo mkdir -p /etc/prometheus/files_sd
+
+
+sudo tar xvf prometheus-2.44.0.linux-amd64.tar.gz
+
+cd prometheus-2.44.0.linux-amd64
+
+sudo mv prometheus promtool /usr/local/bin/
+
+prometheus --version
+
+sudo mv prometheus.yml /etc/prometheus/prometheus.yml
+
+sudo mv consoles/ /etc/prometheus/
+
+sudo mv console_libraries/ /etc/prometheus/
+
+sudo tee /etc/systemd/system/prometheus.service<<EOF
+paste the prometheus.service content here
+
+[Unit]
+Description=Prometheus
+Documentation=https://prometheus.io/docs/introduction/overview/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/var/lib/prometheus \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries \
+  --web.listen-address=0.0.0.0:9090 \
+  --web.external-url=
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+
+sudo chown -R prometheus:prometheus /etc/prometheus
+sudo chown -R prometheus:prometheus /etc/prometheus/*
+
+sudo chmod -R 775 /etc/prometheus
+sudo chmod -R 775 /etc/prometheus/*
+
+
+sudo chown -R prometheus:prometheus /var/lib/prometheus/
+sudo chown -R prometheus:prometheus /var/lib/prometheus/*
+
+
+sudo systemctl daemon-reload
+sudo systemctl start prometheus
+
+sudo systemctl enable prometheus
+
+sudo systemctl status prometheus
+
+
+
+
+
+
+
+
+
+

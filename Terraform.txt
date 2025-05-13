@@ -1,0 +1,76 @@
+TERRAFORM:
+
+Descriptions:
+-------------
+Terraform is a IAC tool. "Infrastructure as Code"
+
+Write script in HCL language. HCL language was developed by HashiCorp.
+
+Best practice is to right a code, to create the infrastructure instead of creating manually.
+
+HashiCorp developed terraform.
+
+Competitors are Ansible. Ansible was developed by RedHat.
+
+Terraform maintains a state where as ansible doesn't do so. Ansible does not understand how many resource has be created every time we run it will create a new instance based on the configurations. But Terraform maintains a state which keeps record of created instances and updates them based on the configurations.
+
+Terraform main advantage- Maintaining the state.
+
+Terraform is most popular in cloud provider. Ansible is most popular in on-premises network. 
+
+===============================================================================================
+
+Installation Steps:
+------------------
+1. Download the zip and extract it
+2. Copy the terraform exe file and paste it in C:/Program Files/terraform
+3. Set the above path as environment variable
+4. Open environment variable and under user variables paste the path.
+
+===============================================================================================
+
+AWS:
+Create a IAM user with administrator access. (Mostly terraform users will have administrator access because we might not know which services they might be using going further. And don't allow console access just give only cli access.)
+
+# aws sts get-caller-identity -> Tells which aws user is authorized for the particular machine right now.
+
+===============================================================================================
+
+Steps:
+------
+1. Install Terraform tool on laptop.
+2. Install aws-cli tool on laptop.
+3. Write the script
+4. Terraform commands (init, apply, etc..)
+
+===============================================================================================
+
+Scripting:
+---------
+
+ami -> Get the AMI id from the AWS console for only once. Click on launch instance and at that time select any machine like amazon Linux, ubuntu, red hat or any thing there you'll see the AMI id for the particular machine and particular region.
+
+===============================================================================================
+
+Commands:
+--------
+# terraform.exe init 
+	-> Initializing the repository for the 1st time.
+# terraform.exe plan 
+	-> Shows the detailed current plan of the configurations
+# terraform.exe apply
+	-> Applies the configurations or changes and create the instance bas	ed on the configurations
+# terraform.exe validate
+	-> Checks if there are any errors in the terraform file
+
+===============================================================================================
+
+Things to Remember:
+------------------
+
+* Terraform files will have the file extension as .tf for eg main.tf
+
+* We cannot change the AMI, Key pair of the instance once created the instance from the terraform file.
+
+*If we want to change the AMI we can do so but the behaviour goes like this.
+Change AMI in terraform file -> terraform.exe apply -> destroys the previous instance -> Creates new instance with new AMI.
